@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  // 设置所有语言默认的代码格式化工具为prettier
+  // prettier只支持前端常见的语言，不被支持的语言需要手动配置相关的格式化工具
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // 配置vscode的eslint插件
+  // https://github.com/microsoft/vscode-eslint#settings-options
+  "eslint.validate": ["javascript", "typescript"],
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
+}
