@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "logs\\.3aab52e9a02662c1bd2b1083e7e6a58b2eb39475-audit.json",
+    "files": [
+        {
+            "date": 1776340653657,
+            "name": "logs\\2026-04-16-prisma-error.log",
+            "hash": "d5849fbbec498274a172a5487c7e58e9dc7707d276a2463f0c660f619867704f"
+        },
+        {
+            "date": 1777538108622,
+            "name": "logs/2026-04-30-prisma-error.log",
+            "hash": "6121dd1aab610ef6cf9e0977701ad0689f72349c8964d5bf9e2c9eb693d664e4"
+        }
+    ],
+    "hashType": "sha256"
+}

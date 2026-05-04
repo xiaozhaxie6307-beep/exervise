@@ -1,0 +1,346 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table user {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  departmentId Int
+  educationId Int
+  ethnicityId Int
+  unitId Int
+  username String [unique, not null]
+  password String [not null]
+  realname String [not null]
+  identificationCard String
+  isEnable Boolean
+  isAdmin Boolean
+  signature String
+  gender Int
+  age Int
+  telephone String
+  marital Int
+  email String
+  jobNumber Int
+  workingYear Int
+  address String
+  province String
+  city String
+  district String
+  addressDetail String
+  qualification String
+  introduction String
+  remark String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  department department
+  education education
+  ethnicity Ethnicity
+  unit unit
+  role Role [not null]
+  scales merge_user_scale [not null]
+  experiences experience [not null]
+  skills merge_user_skill [not null]
+}
+
+Table Ethnicity {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  name String [not null]
+  user user [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table department {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  name String [not null]
+  institutionCode String [not null]
+  user user [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  subsidiaryDepartment SubsidiaryDepartment [not null]
+}
+
+Table SubsidiaryDepartment {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  departmentId Int
+  name String [not null]
+  institutionCode String [not null]
+  isEnable Boolean [not null]
+  remark String
+  department department
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table education {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  name String [not null]
+  user user [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table scales {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  scaleTypeId Int [not null]
+  name String [not null]
+  scacleCode String
+  isFactor Boolean [not null]
+  isSkip Boolean [not null]
+  calformula String
+  tranformulakey String
+  tranformula String
+  average Float
+  sd Float
+  scaleInterpretationResult String
+  baselineScore Int
+  standardSourceMethod String
+  rawSourceMethod String
+  averageSourceMethod String
+  scaleTimeKeeping Boolean
+  scaleTimeLimit Int
+  introduction String
+  instructions String
+  isEnable Boolean [not null]
+  scaleCoverUrl String
+  scaleContentImg String
+  scaleCommend String
+  averageNumberf String
+  sdf String
+  iniscore Int
+  standScore Float
+  averageScore Float
+  averageNumberSD Float
+  isTeam Boolean [not null]
+  teamIntroduction String
+  isComprehensiveReport Boolean [not null]
+  startAge Int
+  endAge Int
+  warnGender Int [not null]
+  skipRule String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  scaleType sub_scales [not null]
+  scaleFactor scale_factor [not null]
+  scaleQuestion scale_question [not null]
+  scaleWarning scale_warning [not null]
+  scaleDiagnosticInfo scale_diagnostic_info [not null]
+  users merge_user_scale [not null]
+}
+
+Table sub_scales {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  name String [not null]
+  scale scales [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table scale_factor {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  scaleId Int [not null]
+  name String [not null]
+  introduction String
+  calformula String
+  tranformula String
+  average Float
+  sd Float
+  baseLineScore Int
+  remark String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  scale scales [not null]
+  factorQuestions merge_factor_question [not null]
+}
+
+Table scale_question {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  scaleId Int [not null]
+  name String
+  questionCode String
+  questionImg String
+  answerGroupCode String
+  isMultiSelect Int [not null]
+  timeLimit Int
+  remark String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  scale scales [not null]
+  answer answers [not null]
+  questionFactors merge_factor_question [not null]
+}
+
+Table merge_factor_question {
+  factorId Int [not null]
+  questionId Int [not null]
+  factor scale_factor [not null]
+  quesiton scale_question [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (factorId, questionId) [pk]
+  }
+}
+
+Table merge_user_scale {
+  userId Int [not null]
+  scaleId Int [not null]
+  user user [not null]
+  scale scales [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (userId, scaleId) [pk]
+  }
+}
+
+Table answers {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  answerGroupCode String
+  name String [not null]
+  number String [not null]
+  picture String
+  type Int [not null]
+  score Int [not null]
+  remark String
+  questionId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  question scale_question [not null]
+}
+
+Table scale_warning {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  scaleId Int [not null]
+  warningType Int [not null]
+  warningExpression String [not null]
+  warningResult String [not null]
+  warningColor String [not null]
+  isEnable Boolean [not null]
+  remark String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  scale scales [not null]
+}
+
+Table unit {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  name String [not null]
+  code String
+  isEnable Boolean [not null, default: true]
+  remark String
+  users user [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table experience {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  userId Int [not null]
+  organization String [not null]
+  position String
+  startDate DateTime
+  endDate DateTime
+  description String
+  remark String
+  user user [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table skill {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  name String [unique, not null]
+  level Int
+  description String
+  users merge_user_skill [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table merge_user_skill {
+  userId Int [not null]
+  skillId Int [not null]
+  user user [not null]
+  skill skill [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (userId, skillId) [pk]
+  }
+}
+
+Table scale_diagnostic_info {
+  id Int [pk, increment]
+  uuid String [unique, not null]
+  scaleId Int [not null]
+  condition String
+  proposal String
+  diagnosticInfo String
+  isEnable Boolean [not null]
+  severity String
+  remark String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  scale scales
+}
+
+Enum Role {
+  ADMIN
+  DIRECTIOR
+  DOCTOR
+  USER
+}
+
+Ref: user.departmentId > department.id
+
+Ref: user.educationId > education.id
+
+Ref: user.ethnicityId > Ethnicity.id
+
+Ref: user.unitId > unit.id
+
+Ref: SubsidiaryDepartment.departmentId > department.id
+
+Ref: scales.scaleTypeId > sub_scales.id
+
+Ref: scale_factor.scaleId > scales.id
+
+Ref: scale_question.scaleId > scales.id
+
+Ref: merge_factor_question.factorId > scale_factor.id
+
+Ref: merge_factor_question.questionId > scale_question.id
+
+Ref: merge_user_scale.userId > user.id
+
+Ref: merge_user_scale.scaleId > scales.id
+
+Ref: answers.questionId > scale_question.id
+
+Ref: scale_warning.scaleId > scales.id
+
+Ref: experience.userId > user.id
+
+Ref: merge_user_skill.userId > user.id
+
+Ref: merge_user_skill.skillId > skill.id
+
+Ref: scale_diagnostic_info.scaleId > scales.id

@@ -1,0 +1,360 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = []
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model User {
+  id                 Int              @id @default(autoincrement())
+  uuid               String           @unique
+  departmentId       Int?             @map("department_id") // 所属部门
+  educationId        Int?             @map("education_id") // 文化程度
+  ethnicityId        Int?             @map("ethnicity_id") // 民族
+  unitId             Int?             @map("unit_id") // 所属单位
+  username           String           @unique
+  password           String
+  realname           String // 姓名
+  identificationCard String?          @map("identification_card") // 身份证
+  isEnable           Boolean?         @map("is_enable") // 是否启用
+  isAdmin            Boolean?         @map("is_admin") // 是否管理人员
+  signature          String? // 签名（一张图片）
+  gender             Int? // 1男 2女
+  age                Int? // 年龄
+  telephone          String? // 电话号码
+  marital            Int? // 婚姻状况 1.已婚 2.未婚 3.丧偶
+  email              String? // 电子邮箱
+  jobNumber          Int?             @map("job_number") // 工号
+  workingYear        Int?             @map("working_year") // 工作年限
+  address            String? // 地址（旧字段，保留向前兼容）
+  province           String? // 省
+  city               String? // 市
+  district           String? // 区
+  addressDetail      String?          @map("address_detail") // 详细地址
+  qualification      String? // 资质
+  introduction       String? // 自我介绍
+  remark             String? // 备注
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  department         Department?      @relation(fields: [departmentId], references: [id])
+  education          Education?       @relation(fields: [educationId], references: [id])
+  ethnicity          Ethnicity?       @relation(fields: [ethnicityId], references: [id])
+  unit               Unit?            @relation(fields: [unitId], references: [id])
+  role               Role
+  scales             mergeUserScale[]
+  experiences        Experience[]
+  skills             mergeUserSkill[]
+
+  @@map("user")
+}
+
+// 民族
+model Ethnicity {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  name      String // 民族名称
+  user      User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN // 超级管理员
+  DIRECTIOR // 主任医师
+  DOCTOR // 普通医生
+  USER // 普通用户
+}
+
+// 隶属部门
+model Department {
+  id                   Int                    @id @default(autoincrement())
+  uuid                 String                 @unique
+  name                 String // 部门名称
+  institutionCode      String                 @map("institution_code") // 机构码
+  user                 User[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  subsidiaryDepartment SubsidiaryDepartment[]
+
+  @@map("department")
+}
+
+// 子部门
+model SubsidiaryDepartment {
+  id              Int         @id @default(autoincrement())
+  uuid            String      @unique
+  departmentId    Int?        @map("department_id") // 隶属的父级部门
+  name            String // 部门名称
+  institutionCode String      @map("institution_code") // 机构码
+  isEnable        Boolean     @map("is_enable") // 是否启用
+  remark          String? // 备注
+  department      Department? @relation(fields: [departmentId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// 教育程度
+model Education {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  name      String
+  user      User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("education")
+}
+
+// 量表
+model Scale {
+  id                        Int                   @id @default(autoincrement())
+  uuid                      String                @unique
+  scaleTypeId               Int                   @map("scale_type_id") // 类型 
+  name                      String // 量表名称
+  scacleCode                String?               @map("scale_code")
+  isFactor                  Boolean               @map("is_factor") // 是否有因子
+  isSkip                    Boolean               @map("is_skip") // 是否跳题
+  calformula                String? // 量表计算公式(粗分)
+  tranformulakey            String?               @map("tranformula_key") // 量表转换公式key 
+  tranformula               String? // 量表转换公式
+  average                   Float? // 平均数X
+  sd                        Float? // 标准差SD
+  scaleInterpretationResult String?               @map("scale_interpretation_result") // 量表结果解释方式
+  baselineScore             Int?                  @map("baseline_score") // 量表基线分数
+  standardSourceMethod      String?               @map("standard_source_method") // 标准分取值方式
+  rawSourceMethod           String?               @map("raw_source_method") // 原始分取值方式
+  averageSourceMethod       String?               @map("average_source_method") // 平均分取值方式
+  scaleTimeKeeping          Boolean?              @map("scale_time_keeping") // 量表计时
+  scaleTimeLimit            Int?                  @map("scale_time_limit") // 量表限时
+  introduction              String? // 量表介绍
+  instructions              String? // 指导语
+  isEnable                  Boolean               @map("is_enable") // 是否启用
+  scaleCoverUrl             String?               @map("scale_cover_url") // 量表封面url
+  scaleContentImg           String?               @map("scale_content_img") // 内容图片
+  scaleCommend              String?               @map("scale_comment") // 推荐语
+  averageNumberf            String?               @map("average_numbre") // 平均数量
+  sdf                       String? // sdf
+  iniscore                  Int? // 积分
+  standScore                Float?                @map("stand_score") // 成绩
+  averageScore              Float?                @map("average_score") // 平均分
+  averageNumberSD           Float?                @map("average_numnber_sd") // 平均值
+  isTeam                    Boolean               @map("is_team") // 是否团体
+  teamIntroduction          String?               @map("team_introduction") // 团体介绍
+  isComprehensiveReport     Boolean               @map("is_comprehensive_report") // 综合报告
+  startAge                  Int?                  @map("start_age") // 开始年龄
+  endAge                    Int?                  @map("end_age") // 结束年龄
+  warnGender                Int                   @map("warn_gender") // 限制性别（男1，女2，男女3）
+  skipRule                  String?               @map("skip_rule") // 跳题规则
+  createdAt                 DateTime              @default(now())
+  updatedAt                 DateTime              @updatedAt
+  scaleType                 ScaleType             @relation(fields: [scaleTypeId], references: [id])
+  scaleFactor               ScaleFactor[] // 对应量表因子
+  scaleQuestion             ScaleQuestion[] // 对应题目信息
+  scaleWarning              ScaleWarning[] // 对应预警信息
+  scaleDiagnosticInfo       ScaleDiagnosticInfo[] // 对应诊断信息
+  users                     mergeUserScale[]
+
+  @@map("scales")
+}
+
+// 量表类型
+model ScaleType {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  name      String
+  scale     Scale[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sub_scales")
+}
+
+// 量表因子
+model ScaleFactor {
+  id              Int                   @id @default(autoincrement())
+  uuid            String                @unique
+  scaleId         Int                   @map("scale_id") // 对应量表id
+  name            String // 因子名称
+  introduction    String? // 因子介绍
+  calformula      String? // 因子计算公式(粗分):0 表示题目累加有公式走公式
+  tranformula     String? // 因子转换公式
+  average         Float? // 平均数X
+  sd              Float? // 标准差sd
+  baseLineScore   Int? // 因子基线分数
+  remark          String? // 备注
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  scale           Scale                 @relation(fields: [scaleId], references: [id])
+  factorQuestions mergeFactorQuestion[]
+
+  @@map("scale_factor")
+}
+
+// 题目信息
+model ScaleQuestion {
+  id              Int                   @id @default(autoincrement())
+  uuid            String                @unique
+  scaleId         Int                   @map("scale_id") // 对应量表id
+  name            String? // 题目名称
+  questionCode    String?               @map("question_code") // 题目代码
+  questionImg     String?               @map("question_img") // 题目图片
+  answerGroupCode String?               @map("answer_group_code") //答案组编号
+  isMultiSelect   Int                   @map("is_multi_select") // 题目答案类型: 1单选； 2多选；3填空；4 叙述；5 图片
+  timeLimit       Int?                  @map("time_limit") // 题目限时
+  remark          String? // 备注
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  scale           Scale                 @relation(fields: [scaleId], references: [id])
+  answer          Answer[]
+  questionFactors mergeFactorQuestion[]
+
+  @@map("scale_question")
+}
+
+// 因子题目中间表
+model mergeFactorQuestion {
+  factorId   Int           @map("factor_id")
+  questionId Int           @map("question_id")
+  factor     ScaleFactor   @relation(fields: [factorId], references: [id])
+  quesiton   ScaleQuestion @relation(fields: [questionId], references: [id])
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@id([factorId, questionId])
+  @@map("merge_factor_question")
+}
+
+// 用户量表中间表
+model mergeUserScale {
+  userId    Int      @map("user_id")
+  scaleId   Int      @map("scale_id")
+  user      User     @relation(fields: [userId], references: [id])
+  scale     Scale    @relation(fields: [scaleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, scaleId])
+  @@map("merge_user_scale")
+}
+
+// 答案信息
+model Answer {
+  id              Int           @id @default(autoincrement())
+  uuid            String        @unique
+  answerGroupCode String?       @map("answer_group_code") // 答案组编号
+  name            String // 选项名称
+  number          String // 答案字母
+  picture         String? // 选项图片
+  type            Int // 答案类型:1单选； 2多选；3填空；4 叙述；5 图片
+  score           Int // 答案分值
+  remark          String? // 备注
+  questionId      Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  question        ScaleQuestion @relation(fields: [questionId], references: [id])
+
+  @@map("answers")
+}
+
+// 预警信息
+model ScaleWarning {
+  id                Int      @id @default(autoincrement())
+  uuid              String   @unique
+  scaleId           Int //对应量表id
+  warningType       Int      @map("warning_type") //0:用粗分做预警条件，1：用标准分做预警条件
+  warningExpression String   @map("warning_Expression") // 危机预警量表表达式
+  warningResult     String   @map("warning_result") // 危机预警结果,e.g 轻度、重度和中度
+  warningColor      String   @map("warning_color") // 用不同颜色表示警告结果的严重性
+  isEnable          Boolean  @map("is_enable") // 是否启用
+  remark            String? // 备注
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  scale             Scale    @relation(fields: [scaleId], references: [id])
+
+  @@map("scale_warning")
+}
+
+// 单位
+model Unit {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  name      String // 单位名称
+  code      String? // 单位代码
+  isEnable  Boolean  @default(true) @map("is_enable") // 是否启用
+  remark    String? // 备注
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("unit")
+}
+
+// 社会经历
+model Experience {
+  id           Int       @id @default(autoincrement())
+  uuid         String    @unique
+  userId       Int       @map("user_id")
+  organization String // 单位 / 组织
+  position     String? // 职务
+  startDate    DateTime? @map("start_date")
+  endDate      DateTime? @map("end_date")
+  description  String? // 经历描述
+  remark       String? // 备注
+  user         User      @relation(fields: [userId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("experience")
+}
+
+// 技能
+model Skill {
+  id          Int              @id @default(autoincrement())
+  uuid        String           @unique
+  name        String           @unique // 技能名称
+  level       Int? // 1-5 等级
+  description String? // 技能描述
+  users       mergeUserSkill[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("skill")
+}
+
+// 用户技能中间表
+model mergeUserSkill {
+  userId    Int      @map("user_id")
+  skillId   Int      @map("skill_id")
+  user      User     @relation(fields: [userId], references: [id])
+  skill     Skill    @relation(fields: [skillId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, skillId])
+  @@map("merge_user_skill")
+}
+
+// 量表建议诊断信息
+model ScaleDiagnosticInfo {
+  id             Int      @id @default(autoincrement())
+  uuid           String   @unique
+  scaleId        Int // 对应量表id
+  condition      String? // 条件表达式
+  proposal       String? // 建议语言
+  diagnosticInfo String?  @map("diagnostic_info") // 诊断信息
+  isEnable       Boolean  @map("is_enable") // 是否启用
+  severity       String? // 严重程度
+  remark         String? // 备注
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  scale          Scale?   @relation(fields: [scaleId], references: [id])
+
+  @@map("scale_diagnostic_info")
+}

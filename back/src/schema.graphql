@@ -1,0 +1,311 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Auth {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+  user: User!
+}
+
+input ChangePasswordInput {
+  newPassword: String!
+  oldPassword: String!
+}
+
+input CreateUserInput {
+  addressDetail: String
+  age: Int
+  city: String
+  district: String
+  email: String
+  gender: Int
+  introduction: String
+  isAdmin: Boolean
+  isEnable: Boolean
+  marital: Int
+  password: String!
+  province: String
+  qualification: String
+  realname: String!
+  remark: String
+  role: Role
+  telephone: String
+  unitId: Int
+  username: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Experience {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  description: String
+  endDate: DateTime
+  id: ID!
+  organization: String!
+  position: String
+  remark: String
+  startDate: DateTime
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  user: ExperienceUser
+  userId: Int!
+  uuid: String!
+}
+
+type ExperienceUser {
+  id: Int!
+  realname: String!
+  username: String!
+}
+
+input GetExperiencesPagedInput {
+  currentPage: Int!
+  organization: String
+  pageNumber: Int!
+  userId: Int
+}
+
+input GetSkillUsersPagedInput {
+  currentPage: Int!
+  pageNumber: Int!
+  skillId: Int!
+}
+
+input GetSkillsPagedInput {
+  currentPage: Int!
+  name: String
+  pageNumber: Int!
+}
+
+input GetUnitsPagedInput {
+  code: String
+  currentPage: Int!
+  name: String
+  pageNumber: Int!
+}
+
+input GetUsersPagedInput {
+  currentPage: Int!
+  pageNumber: Int!
+  realname: String
+  unitId: Int
+  username: String
+}
+
+"""
+A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+"""
+scalar JWT
+
+input LoginInput {
+  password: String!
+  username: String!
+}
+
+type Mutation {
+  attachSkillToUser(data: UserSkillRelationInput!): Boolean!
+  changePassword(data: ChangePasswordInput!): User!
+  createUser(data: CreateUserInput!): User!
+  deleteExperience(id: Int!): Experience!
+  deleteSkill(id: Int!): Skill!
+  deleteUnit(id: Int!): Unit!
+  deleteUser(id: Int!): User!
+  detachSkillFromUser(data: UserSkillRelationInput!): Boolean!
+  login(data: LoginInput!): Auth!
+  refreshToken(token: JWT!): Token!
+  signup(data: SignupInput!): Auth!
+  submitExperience(data: SubmitExperienceInput!): Experience!
+  submitSkill(data: SubmitSkillInput!): Skill!
+  submitUnit(data: SubmitUnitInput!): Unit!
+  updateUser(data: UpdateUserInput!): User!
+  updateUserById(data: UpdateUserInput!, id: Int!): User!
+}
+
+type Query {
+  getAllSkills: [Skill!]!
+  getAllUnits: [Unit!]!
+  getExperienceDetail(id: Int!): Experience
+  getExperiencesPaged(data: GetExperiencesPagedInput!): [Experience!]!
+  getExperiencesTotal(data: GetExperiencesPagedInput!): Int!
+  getSkillDetail(id: Int!): Skill
+  getSkillUsersPaged(data: GetSkillUsersPagedInput!): SkillUsersReturn!
+  getSkillsPaged(data: GetSkillsPagedInput!): [Skill!]!
+  getSkillsTotal(data: GetSkillsPagedInput!): Int!
+  getUnitDetail(id: Int!): Unit
+  getUnitsPaged(data: GetUnitsPagedInput!): [Unit!]!
+  getUnitsTotal(data: GetUnitsPagedInput!): Int!
+  getUserDetail(id: Int!): User
+  getUsersPaged(data: GetUsersPagedInput!): [User!]!
+  getUsersTotal(data: GetUsersPagedInput!): Int!
+  hello(name: String!): String!
+  helloWorld: String!
+  me: User!
+}
+
+"""User role"""
+enum Role {
+  ADMIN
+  DIRECTIOR
+  DOCTOR
+  USER
+}
+
+input SignupInput {
+  departmentId: Int
+  password: String!
+  realname: String
+  username: String!
+}
+
+type Skill {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  level: Int
+  name: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  userCount: Int
+  uuid: String!
+}
+
+type SkillUser {
+  id: Int!
+  realname: String!
+  telephone: String
+  unitId: Int
+  username: String!
+}
+
+type SkillUsersReturn {
+  rows: [SkillUser!]!
+  total: Int!
+}
+
+input SubmitExperienceInput {
+  description: String
+  endDate: DateTime
+  id: Int
+  organization: String!
+  position: String
+  remark: String
+  startDate: DateTime
+  userId: Int!
+}
+
+input SubmitSkillInput {
+  description: String
+  id: Int
+  level: Int
+  name: String!
+}
+
+input SubmitUnitInput {
+  code: String
+  id: Int
+  isEnable: Boolean
+  name: String!
+  remark: String
+}
+
+type Token {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+}
+
+type Unit {
+  code: String
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  isEnable: Boolean
+  name: String!
+  remark: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  userCount: Int
+  uuid: String!
+}
+
+input UpdateUserInput {
+  address: String
+  addressDetail: String
+  age: Int
+  city: String
+  district: String
+  email: String
+  gender: Int
+  id: Int
+  introduction: String
+  isAdmin: Boolean
+  isEnable: Boolean
+  job_number: Int
+  marital: Int
+  nationality: String
+  province: String
+  qualification: String
+  realname: String
+  remark: String
+  role: Role
+  telephone: String
+  unitId: Int
+  working_year: Int
+}
+
+type User {
+  address: String
+  addressDetail: String
+  age: Int
+  city: String
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  district: String
+  email: String
+  firstname: String
+  gender: Int
+  id: ID!
+  introduction: String
+  isAdmin: Boolean
+  isEnable: Boolean
+  job_number: Int
+  lastname: String
+  marital: Int
+  nationality: String
+  province: String
+  qualification: String
+  realname: String!
+  remark: String
+  role: Role!
+  skills: [Skill!]
+  telephone: String
+  unit: Unit
+  unitId: Int
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  username: String!
+  uuid: String!
+  working_year: Int
+}
+
+input UserSkillRelationInput {
+  skillId: Int!
+  userId: Int!
+}
